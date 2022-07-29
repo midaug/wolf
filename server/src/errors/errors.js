@@ -23,6 +23,7 @@ exports.ERR_RESOURCE_ID_NOT_FOUND = 'ERR_RESOURCE_ID_NOT_FOUND'
 exports.ERR_METHOD_INVALID = 'ERR_METHOD_INVALID'
 exports.ERR_LDAP_CONFIG_NOT_FOUND = 'ERR_LDAP_CONFIG_NOT_FOUND'
 exports.ERR_NOT_ALLOWED_RESET_PWD = 'ERR_NOT_ALLOWED_RESET_PWD'
+exports.ERR_NOT_ALLOWED_RESET_SECRET = 'ERR_NOT_ALLOWED_RESET_SECRET'
 
 const msgs = {
   ERR_OBJECT_NOT_FOUND: 'Object not found',
@@ -50,6 +51,7 @@ const msgs = {
   ERR_METHOD_INVALID: 'HTTP Request Method is Invalid',
   ERR_LDAP_CONFIG_NOT_FOUND: 'LDAP config not found',
   ERR_NOT_ALLOWED_RESET_PWD: 'Not allowed to reset password',
+  ERR_NOT_ALLOWED_RESET_SECRET: 'Not allowed to reset secret',
 }
 
 function errmsg(reason) {

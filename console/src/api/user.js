@@ -84,3 +84,29 @@ export async function checkUsernameExist(username, excludeUserId) {
   const status = await checkExist('user', value, exclude)
   return status
 }
+
+export async function resetKeyAndSecret(id) {
+  const data = { id }
+  return await request({
+    url: '/user/resetKeyAndSecret',
+    method: 'put',
+    data,
+  })
+}
+
+export async function getKeyAndSecret() {
+  return await request({
+    url: '/user/getKeyAndSecret',
+    method: 'get',
+    params: { },
+  })
+}
+
+export async function searchKeyAndSecret(id) {
+  const data = { id }
+  return await request({
+    url: '/user/searchKeyAndSecret',
+    method: 'get',
+    params: data,
+  })
+}

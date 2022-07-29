@@ -16,6 +16,8 @@ const model = Sequelize.define('user', {
   manager: { type: Seq.TEXT },
   status: { type: Seq.SMALLINT },
   authType: { type: Seq.SMALLINT, field: 'auth_type' },
+  ukey: { type: Seq.TEXT },
+  usecret: { type: Seq.TEXT },
   lastLogin: { type: Seq.INTEGER, field: 'last_login' },
   profile: { type: Seq.JSONB },
   createTime: { type: Seq.INTEGER, field: 'create_time' },

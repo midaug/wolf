@@ -23,6 +23,7 @@ const MatchType = {
 const AuthType = {
   PASSWORD: 1,
   LDAP: 2,
+  USERSIGN: 3
 }
 
 exports.UserStatus = UserStatus

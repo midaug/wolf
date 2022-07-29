@@ -128,7 +128,7 @@ class User extends BasicService {
     const key = this.getArg('key')
     const where = {}
     if (key && key !== '') {
-      where[Op.or] = [like('username', key), like('nickname', key), like('tel', key)]
+      where[Op.or] = [like('username', key), like('nickname', key), like('tel', key), like('ukey', key)]
     }
 
     const userInfo = this.ctx.userInfo
@@ -230,7 +230,7 @@ class User extends BasicService {
     this.checkMethod('PUT')
     const id = this.getRequiredIntArg('id')
     const userInfo = await UserModel.findByPk(id)
-    if (userInfo.authType !== constant.AuthType.PASSWORD) {
+    if (userInfo.authType !== constant.AuthType.PASSWORD && userInfo.authType !== constant.AuthType.USERSIGN) {
       this.fail(400, errors.ERR_NOT_ALLOWED_RESET_PWD)
       return
     }
@@ -283,6 +283,72 @@ class User extends BasicService {
     const rowCount = await UserModel.destroy(options);
     this.success({'count': rowCount, 'userInfo': util.filterFieldWhite(userInfo, userFields)})
   }
+
+  //重置ukey及uSecret, 使用UUID
+  async resetKeyAndSecret() {
+    this.checkMethod('PUT')
+    const id = this.getRequiredIntArg('id')
+    const userInfo = await UserModel.findByPk(id)
+    if (userInfo.authType == constant.AuthType.LDAP) {
+      this.fail(400, errors.ERR_NOT_ALLOWED_RESET_SECRET)
+      return
+    }
+    const values = {}
+    values.ukey = util.createUuid()
+    values.usecret = util.createUuid()
+    values.updateTime = util.unixtime()
+    const options = {where: {id}}
+    const {effects} = await UserModel.mustUpdate(values, options)
+    if (effects <= 0) {
+      this.fail(400, errors.ERR_USER_NOT_FOUND)
+      return
+    }
+    const data = {
+      id: id,
+      ukey: values.ukey,
+      usecret: values.usecret,
+      updateTime: values.unixtime
+    }
+    this.success(data)
+  } 
+  //获取当前用户密钥
+  async getKeyAndSecret() {
+    this.checkMethod('GET')
+    const userInfo = this.ctx.userInfo
+    let applications = await this.userApplications(userInfo);
+    userInfo.appIDs = userInfo.appIDs || []
+    const data = {'userInfo': util.filterFieldWhite(userInfo, ["id","username","usecret","ukey"]), applications}
+
+    this.success(data)
+  }   
+
+  //获取查询指定用户密钥
+  async searchKeyAndSecret() {
+    // console.log("searchKeyAndSecret", this.getArgs())
+    this.checkMethod('GET')
+    const username = this.getArg('username')
+    let userInfo = null
+    let where = null
+    if (username) {
+      where = {username}
+      userInfo = await UserModel.findOne({where})
+      if (!userInfo) {
+        this.fail(200, errors.ERR_USER_NOT_FOUND)
+        return
+      }
+    } else {
+      const id = this.getRequiredIntArg('id')
+      where = {id}
+      userInfo = await UserModel.findByPk(id)
+      if (!userInfo) {
+        this.fail(200, errors.ERR_USER_NOT_FOUND)
+        return
+      }
+    }
+    const data = {'userInfo': util.filterFieldWhite(userInfo, ["id","username","usecret","ukey"])}
+
+    this.success(data)
+  }  
 }
 
 module.exports = User

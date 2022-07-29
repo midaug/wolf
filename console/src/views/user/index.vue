@@ -60,6 +60,14 @@
           <el-button type="danger" size="small" @click="handleDelete(scope)">{{ $t('wolf.btnDelete') }}</el-button>
         </template>
       </el-table-column>
+      <el-table-column align="center" :label="$t('wolf.titleUserKey')" min-width="25">
+        <template slot-scope="scope">
+          <el-button type="primary" size="small" @click="handleViewUkey(scope)">{{ $t('wolf.btnView') }}</el-button>
+          <el-tooltip class="item" effect="dark" content="Reset user key and secret" placement="top">
+            <el-button type="primary" size="small" :disabled="!userEditable(scope.row)" @click="handleResetUkey(scope)">{{ $t('wolf.btnReset') }}</el-button>
+          </el-tooltip>
+        </template>
+      </el-table-column>
     </el-table>
     <div class="pagination pagination-center">
       <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="listUsers" />
@@ -108,7 +116,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { deepClone, format } from '@/utils'
-import { listUsers, addUser, deleteUser, updateUser, checkUsernameExist, resetPwd } from '@/api/user'
+import { listUsers, addUser, deleteUser, updateUser, checkUsernameExist, resetPwd, searchKeyAndSecret, resetKeyAndSecret } from '@/api/user'
 
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import RoleDetail from '@/views/user/roleDetail'
@@ -261,6 +269,45 @@ export default {
         }
       }
       return false
+    },
+    async handleViewUkey({ $index, row }) {
+      const res = await searchKeyAndSecret(row.id)
+      const ukey = res.data.userInfo.ukey
+      const usecret = res.data.userInfo.usecret
+      const prompt = format(i18n.t('wolf.userPromptViewUkeySuccess'), { id: row.id, ukey, usecret })
+      this.$notify({
+        title: 'Success',
+        dangerouslyUseHTMLString: true,
+        message: prompt,
+        type: 'success',
+        duration: 0,
+      })
+    },
+    handleResetUkey({ $index, row }) {
+      const prompt = i18n.t('wolf.userPromptConfirmResetUkey')
+      const textConfirm = i18n.t('wolf.btnConfirm')
+      const textCancel = i18n.t('wolf.btnCancel')
+      this.$confirm(prompt, 'Warning', {
+        confirmButtonText: textConfirm,
+        cancelButtonText: textCancel,
+        type: 'warning',
+      })
+        .then(async() => {
+          const res = await resetKeyAndSecret(row.id)
+          if (res.ok) {
+            const ukey = res.data.ukey
+            const usecret = res.data.usecret
+            const prompt = format(i18n.t('wolf.userPromptResetUkeySuccess'), { ukey, usecret })
+            this.$notify({
+              title: 'Success',
+              dangerouslyUseHTMLString: true,
+              message: prompt,
+              type: 'success',
+              duration: 0,
+            })
+          }
+        })
+        .catch(err => { console.error(err) })
     },
     handleAdd() {
       this.user = Object.assign({}, defaultUser)

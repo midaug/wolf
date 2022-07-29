@@ -25,6 +25,7 @@ const en = {
     'titleDescription': 'Description',
     'titleCreateTime': 'Create Time',
     'titleOperations': 'Operations',
+    'titleUserKey': 'User Key',
     'labelDenyAll': 'Deny All',
     'labelAllowAll': 'Allow All',
     'labelEqualsMatch': 'Equals Match',
@@ -92,7 +93,7 @@ const en = {
 
     'userNewUser': 'New User',
     'userEditUser': 'Edit User',
-    'userSearchPrompt': 'username/nickname or mobile',
+    'userSearchPrompt': 'username/nickname/ukey or mobile',
 
     'userTitleUserName': 'User Name',
     'userTitleNickName': 'Nick Name',
@@ -142,6 +143,9 @@ const en = {
     'userPromptUpdateSuccess': '<div>Alter user success.</div>',
     'userPromptAddSuccess': '<div>User name: ${username}</div><div>Password: ${password}</div><div>This information is only displayed once, please be sure to save this account and password.</div>',
     'userPromptUpdateRoleDetailSuccess': '<div>Alter permissions/roles success!</div>',
+    'userPromptConfirmResetUkey': 'Confirm to reset the ukey of user?',
+    'userPromptResetUkeySuccess': '<div>Success to reset ukey! </div><div>ukey:${ukey}<br/>usecret:${usecret}</div>',
+    'userPromptViewUkeySuccess': '<div>Success of user id 【${id}】! </div><div>ukey=${ukey}<br/>usecret=${usecret}</div>',
 
     'roleSearchPrompt': 'Role id or name',
     'roleNewRole': 'New Role',

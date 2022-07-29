@@ -262,7 +262,7 @@ class BasicService extends Service {
 
   async passwordUserLoginInternal(username, password) {
     let userInfo = await UserModel.findOne({where: {username}})
-    if (!userInfo || userInfo.authType !== constant.AuthType.PASSWORD) { // user not exist or not a normal user
+    if (!userInfo || userInfo.authType == constant.AuthType.LDAP) { // user not exist or not a normal user
       this.log4js.warn('user [%s] login failed! user not exist', username)
       return {err: errors.ERR_USER_NOT_FOUND}
     }

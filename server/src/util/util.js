@@ -3,6 +3,11 @@ const _ = require('lodash')
 const bcrypt = require('bcrypt-node')
 const moment = require('moment')
 const crypto = require('crypto')
+const { v4: uuidv4 } = require('uuid')
+
+function createUuid() {
+  return uuidv4()
+}
 
 function sha1hex(data) {
   const sha1 = crypto.createHash('sha1')
@@ -39,6 +44,10 @@ function unixtime(strDate = undefined) {
   return moment(strDate).unix()
 }
 
+function timestamp(strDate = undefined) {
+  return moment(strDate).valueOf()
+}
+
 function fromUnixtime(unixtime, format = 'YYYY-MM-DD HH:mm:ss') {
   /* istanbul ignore next */
   return moment.unix(unixtime).format(format)
@@ -70,9 +79,11 @@ exports.encodePassword = encodePassword
 exports.comparePassword = comparePassword
 exports.currentDate = currentDate
 exports.unixtime = unixtime
+exports.timestamp = timestamp
 exports.getDate = getDate
 exports.fromUnixtime = fromUnixtime
 exports.filterFieldWhite = filterFieldWhite
 exports.filterFieldBlack = filterFieldBlack
 exports.randomString = randomString
 exports.format = format
+exports.createUuid = createUuid

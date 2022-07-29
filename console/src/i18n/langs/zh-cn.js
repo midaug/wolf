@@ -25,6 +25,7 @@ const zhcn = {
     'titleDescription': '描述',
     'titleCreateTime': '创建时间',
     'titleOperations': '操作',
+    'titleUserKey': '密钥',
     'labelDenyAll': '禁止所有人操作',
     'labelAllowAll': '允许所有人操作',
     'labelEqualsMatch': '相等匹配',
@@ -92,7 +93,7 @@ const zhcn = {
 
     'userNewUser': '新用户',
     'userEditUser': '编辑用户',
-    'userSearchPrompt': '用户名,昵称,手机号',
+    'userSearchPrompt': '用户名,昵称,手机号,ukey',
 
     'userTitleUserName': '用户名',
     'userTitleNickName': '昵称',
@@ -142,6 +143,9 @@ const zhcn = {
     'userPromptUpdateSuccess': '<div>用户已经修改.</div>',
     'userPromptAddSuccess': '<div>用户名: ${username}</div><div>密码: ${password}</div><div>此信息只显示一次，请务必保存新账号及密码。</div>',
     'userPromptUpdateRoleDetailSuccess': '<div>用户权限/角色已经修改!</div>',
+    'userPromptConfirmResetUkey': '确定要重置该用户的密钥吗?',
+    'userPromptResetUkeySuccess': '<div>密钥已重置! </div><div>ukey:${ukey}<br/>usecret:${usecret}</div>',
+    'userPromptViewUkeySuccess': '<div>ID为【${id}】密钥查看! </div><div>ukey=${ukey}<br/>usecret=${usecret}</div>',
 
     'roleSearchPrompt': '角色ID或名称',
     'roleNewRole': '新角色',

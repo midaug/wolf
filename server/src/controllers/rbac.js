@@ -5,6 +5,7 @@ const UserModel = require('../model/user')
 const ApplicationModel = require('../model/application')
 const constant = require('../util/constant')
 const util = require('../util/util')
+const signUtil = require('../util/sign')
 const userCache = require('../util/user-cache')
 const {ldapOptions} = require('./helper')
 
@@ -13,6 +14,13 @@ const userFields = ['id', 'username', 'nickname', 'email', 'appIDs',
   'manager',  'lastLogin', 'profile', 'createTime', 'permissions', 'roles'];
 
 const errors = {
+  ERR_TIME_MISSING: 'Time missing!',
+  ERR_SIGN_MISSING: 'Sign missing!',
+  ERR_UKEY_MISSING: 'Ukey missing!',  
+  ERR_TIME_CHECK_OUT: 'Check timeout!', 
+  ERR_UKEY_NOT_FOUND: 'Ukey not found!',   
+  ERR_SIGN_CHECK_ERROR: 'Sign verification failed!',     
+
   ERR_USERNAME_MISSING: 'Username missing!',
   ERR_PASSWORD_MISSING: 'Password missing!',
   ERR_APPID_NOT_FOUND: 'Appid not found!',
@@ -92,6 +100,65 @@ class Rbac extends RbacPub {
   }
 
   async _loginPostInternal() {
+    const authType = this.getIntArg('authType', constant.AuthType.PASSWORD)
+    if (constant.AuthType.USERSIGN != authType) {
+      return await this._loginPostUserInternal()
+    }
+    const ukey = this.getArg('ukey')
+    const sign = this.getArg('sign')
+    const time = this.getRequiredIntArg('time')
+    const appid = this.getArg('appid')
+    const args = this.getArgs()
+    this.log4js.info('USERSIGN: %s', JSON.stringify(args))
+    if (!sign) {
+      return {ok: false, reason: 'ERR_SIGN_MISSING'}
+    }
+    if (!time) {
+      return {ok: false, reason: 'ERR_TIME_MISSING'}
+    }
+    if (!ukey) {
+      return {ok: false, reason: 'ERR_UKEY_MISSING'}
+    }
+    if (!appid) {
+      return {ok: false, reason: 'ERR_APPID_MISSING'}
+    }
+    const diff_time = Math.abs(util.timestamp() - time)
+    if (diff_time > config.rbacUserSignCheckTime){
+      return {ok: false, reason: 'ERR_TIME_CHECK_OUT'}
+    }
+    const where = {ukey}
+    const userInfo = await UserModel.findOne({where})
+    if (!userInfo) {
+      this.log4js.warn(`user ukey [%s] not found`, ukey)
+      return {ok: false, reason: 'ERR_UKEY_NOT_FOUND'}
+    }
+    // 插入sign认证逻辑 接收body：{"appid": "restful", "key":"xxxxxx", "time":"1658993772", "authType":3, "sign":"xxxxxxxxx"}，
+    // body提取删除sign后字段排序生成url参数格式.   key+拼装参数+secret 计算出sign与传入的sign验证
+    const usecret = userInfo.usecret
+    delete args.sign
+    const encryptSign = signUtil.encrypt(ukey, usecret, args)
+    if (sign !== encryptSign){
+      this.log4js.warn(`%s encryptSign=%s`, errors.ERR_SIGN_CHECK_ERROR, encryptSign)
+      return {ok: false, reason: 'ERR_SIGN_CHECK_ERROR'}
+    }
+
+    const application = await ApplicationModel.findByPk(appid)
+    if (!application) { // app not exist
+      this.log4js.warn(`application id [%s] not found`, username)
+      return {ok: false, reason: 'ERR_APPID_NOT_FOUND'}
+    }
+    if (!userInfo.appIDs || !userInfo.appIDs.includes(appid)) {
+      this.log4js.warn('user [%s] login failed! user is not associated with the app', username)
+      return {ok: false, reason: 'ERR_USER_APPIDS'}
+    }
+
+    await userCache.flushUserCacheByID(userInfo.id, appid)
+
+    const { token, expiresIn } = await this.tokenCreate(userInfo, appid)
+    return {ok: true, token, expiresIn, userInfo}
+  }
+
+  async _loginPostUserInternal() {
     const username = this.getArg('username')
     const password = this.getArg('password')
     const returnTo = this.getArg('return_to', '/')
