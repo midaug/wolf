@@ -126,15 +126,15 @@ class Rbac extends RbacPub {
     if (diff_time > config.rbacUserSignCheckTime){
       return {ok: false, reason: 'ERR_TIME_CHECK_OUT'}
     }
-    const where = {ukey}
-    const userInfo = await UserModel.findOne({where})
+    const {userInfo, cached} = await userCache.getUserInfoByUkey(ukey, appid)
     if (!userInfo) {
-      this.log4js.warn(`user ukey [%s] not found`, ukey)
+      this.log4js.warn(`user ukey [%s] not found, cache is %s`, ukey, cached)
       return {ok: false, reason: 'ERR_UKEY_NOT_FOUND'}
     }
+    
     // 插入sign认证逻辑 接收body：{"appid": "restful", "key":"xxxxxx", "time":"1658993772", "authType":3, "sign":"xxxxxxxxx"}，
     // body提取删除sign后字段排序生成url参数格式.   key+拼装参数+secret 计算出sign与传入的sign验证
-    const usecret = userInfo.usecret
+    const usecret = userInfo['usecret']
     delete args.sign
     const encryptSign = signUtil.encrypt(ukey, usecret, args)
     if (sign !== encryptSign){
@@ -142,17 +142,17 @@ class Rbac extends RbacPub {
       return {ok: false, reason: 'ERR_SIGN_CHECK_ERROR'}
     }
 
-    const application = await ApplicationModel.findByPk(appid)
-    if (!application) { // app not exist
-      this.log4js.warn(`application id [%s] not found`, username)
-      return {ok: false, reason: 'ERR_APPID_NOT_FOUND'}
-    }
+    // const application = await ApplicationModel.findByPk(appid)
+    // if (!application) { // app not exist
+    //   this.log4js.warn(`application id [%s] not found`, username)
+    //   return {ok: false, reason: 'ERR_APPID_NOT_FOUND'}
+    // }
     if (!userInfo.appIDs || !userInfo.appIDs.includes(appid)) {
       this.log4js.warn('user [%s] login failed! user is not associated with the app', username)
       return {ok: false, reason: 'ERR_USER_APPIDS'}
     }
 
-    await userCache.flushUserCacheByID(userInfo.id, appid)
+    // await userCache.flushUserCacheByID(ukey, appid)
 
     const { token, expiresIn } = await this.tokenCreate(userInfo, appid)
     return {ok: true, token, expiresIn, userInfo}
