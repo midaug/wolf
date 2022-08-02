@@ -14,6 +14,6 @@ if [ "$?" != "0" ]; then
 fi
 cd ../
 echo "BUILD SERVER..."
-docker build -t igeeky/wolf-server:$TAG -f ./server/Dockerfile ./server
-docker build -t igeeky/wolf-server:latest -f ./server/Dockerfile ./server
+docker build -t midaug/wolf-server:$TAG -f ./server/Dockerfile ./server
+docker build -t midaug/wolf-server:latest -f ./server/Dockerfile ./server
 echo "BUILD SUCCESS."
