@@ -186,7 +186,7 @@ const sequelize = new Sequelize(dbConfig.url, {
     min: 0,
     idle: dbConfig.idle || 10000,
   },
-  logging: (sql) => log4js.info(sql),
+  logging: (sql) => log4js.debug(sql),
   define: {
     timestamps: false, // default is true
   },

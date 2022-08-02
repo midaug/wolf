@@ -31,7 +31,7 @@ router.all('/wolf/:service/:bizMethod', async (ctx, next) => {
   const originalBizMethod = ctx.params.bizMethod; // get the bizMethod from uri.
   const bizMethod = _.camelCase(originalBizMethod.replace('\.', '_'))
   const bizMethodEx = _.camelCase((originalBizMethod + '_' + method).replace('\.', '_'))
-  log4js.info('service: %s call bizMethod [%s] or [%s]', service, bizMethod, bizMethodEx)
+  log4js.debug('service: %s call bizMethod [%s] or [%s]', service, bizMethod, bizMethodEx)
   const requestClass = routers.get(service);
   if (!requestClass) {
     ctx.status = 404;
@@ -50,7 +50,7 @@ router.all('/wolf/:service', async (ctx, next) => {
   }
   let bizMethod = ctx.request.method
   bizMethod = _.camelCase(bizMethod.replace('\.', '_'))
-  log4js.info('service: %s call bizMethod [%s]', service, bizMethod)
+  log4js.debug('service: %s call bizMethod [%s]', service, bizMethod)
   const requestClass = routers.get(service);
   if (!requestClass) {
     ctx.status = 404;

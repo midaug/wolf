@@ -26,7 +26,7 @@ function tokenDecrypt(token) {
       log4js.error('jwt.verify(token: %s) failed!', token)
       return { error: ERR_TOKEN_INVALID }
     }
-    log4js.info('token [%s], decode userInfo: %s', token, JSON.stringify(userInfo))
+    log4js.debug('token [%s], decode userInfo: %s', token, JSON.stringify(userInfo))
     // token version is not matched
     if (!userInfo.version || userInfo.version < tokenVersion) {
       log4js.error('token version: ', userInfo.version, ' is not match current version:', tokenVersion)

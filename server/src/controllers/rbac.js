@@ -109,7 +109,7 @@ class Rbac extends RbacPub {
     const time = this.getRequiredIntArg('time')
     const appid = this.getArg('appid')
     const args = this.getArgs()
-    this.log4js.info('USERSIGN: %s', JSON.stringify(args))
+    this.log4js.debug('USERSIGN: %s', JSON.stringify(args))
     if (!sign) {
       return {ok: false, reason: 'ERR_SIGN_MISSING'}
     }

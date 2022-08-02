@@ -87,9 +87,9 @@ class Service extends ArgsUtil {
 
   async do(bizMethod, bizMethodEx) {
     if (bizMethodEx) {
-      log4js.info('url: %s, bizMethod: %s or %s', this.url, bizMethod, bizMethodEx)
+      log4js.debug('url: %s, bizMethod: %s or %s', this.url, bizMethod, bizMethodEx)
     } else {
-      log4js.info('url: %s, bizMethod: %s', this.url, bizMethod)
+      log4js.debug('url: %s, bizMethod: %s', this.url, bizMethod)
     }
     let callMethod = bizMethod;
     if (bizMethodEx && this[bizMethodEx] && typeof(this[bizMethodEx]) === 'function') {
