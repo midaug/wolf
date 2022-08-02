@@ -37,7 +37,7 @@ try {
   })
 
   app.use(logger((str, args) => {
-    log4js.info(str, args)
+    log4js.info(str)
   }))
   app.use(accessLog())
   app.use(views(path.join(__dirname, './tmpl'), {
