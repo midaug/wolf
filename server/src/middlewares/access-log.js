@@ -8,6 +8,8 @@ const _ = require('lodash')
 
 
 const ignoreUrls = {
+  ['/favicon.ico']: true,  
+  ['/wolf/ping']: true,
   ['/wolf/user/info']: true,
   ['/wolf/access-log/list']: true,
 }
@@ -20,7 +22,9 @@ function isRecordAccessLog(ctx) {
   if (ignoreUrls[ctx.path]) {
     return false;
   }
-
+  if (_.startsWith(ctx.path, '/static/')) {
+    return false;
+  }
   if (_.startsWith(ctx.path, '/wolf/rbac/')) {
     return false;
   }
