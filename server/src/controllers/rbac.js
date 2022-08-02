@@ -154,7 +154,7 @@ class Rbac extends RbacPub {
 
     // await userCache.flushUserCacheByID(ukey, appid)
 
-    const { token, expiresIn } = await this.tokenCreate(userInfo, appid)
+    const { token, expiresIn } = await this.tokenCreateCheck(userInfo, appid)
     return {ok: true, token, expiresIn, userInfo}
   }
 

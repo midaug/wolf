@@ -202,6 +202,22 @@ class BasicService extends Service {
     return values;
   }
 
+  async tokenCreateCheck(userInfo, appid) {
+    const tokenInfo = await tokenUtil.tokenCreate(userInfo, appid);
+
+    const lastLogin = util.unixtime()
+    try {
+      if (config.recordLastLoginTime) {
+        this.updateLastLoginTime(userInfo.id, lastLogin)
+      }
+      userInfo.lastLogin = lastLogin
+    } catch (ex) {
+      this.log4js.error('updateLastLoginTime failed! err:', ex)
+    }
+
+    return tokenInfo
+  }
+
   async tokenCreate(userInfo, appid) {
     const tokenInfo = await tokenUtil.tokenCreate(userInfo, appid);
 
