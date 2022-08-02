@@ -21,7 +21,7 @@ require('fs').readdirSync(controllerPath).forEach(function(filename) {
 const router = new Router()
 
 function wolf_ping(ctx, next) {
-  ctx.body = json.ok({server: 'rbac', now: util.currentDate()})
+  ctx.body = json.ok({server: 'rbac', now: util.currentDate(), now_time: util.timestamp()})
 }
 
 
