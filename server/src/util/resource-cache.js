@@ -6,7 +6,7 @@ const Sequelize = require('sequelize')
 const Op = require('sequelize').Op;
 const log4js = require('./log4js')
 
-const keyPrefix = 'wolfres:'
+const keyPrefix = 'wolfres'
 
 const resourceCache = new WolfCache(keyPrefix)
 
