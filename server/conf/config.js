@@ -6,7 +6,7 @@ const config = {
   rbacTokenExpireTime: parseInt(process.env.RBAC_TOKEN_EXPIRE_TIME) || 3600 * 24 * 30,
   consoleTokenExpireTime: parseInt(process.env.CONSOLE_TOKEN_EXPIRE_TIME) || 3600 * 24 * 30,
   rbacRecordAccessLog: (process.env.RBAC_RECORD_ACCESS_LOG || 'yes') === 'yes',
-  memCacheTTLSecond: 600,
+  memCacheTTLSecond: parseInt(process.env.MEM_CACHE_TTL_SECOND) || 600,
   memCacheByRedis: (process.env.MEM_CACHE_BY_REDIS || 'no') === 'yes',
   clientChangePassword: (process.env.CLIENT_CHANGE_PWD || 'yes') === 'yes',
   database: {
