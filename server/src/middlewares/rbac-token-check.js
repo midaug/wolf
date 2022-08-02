@@ -60,7 +60,9 @@ module.exports = function() {
       const userId = tokenUserInfo.id
       const appid = tokenUserInfo.appid
       const {userInfo, cached} = await userCache.getUserInfoById(tokenUserInfo.id, appid)
-      log4js.info('getUserInfoById(userId:%d, appID:%s) cached: %s', tokenUserInfo.id, appid, cached)
+      if ('hit' !== cached){
+        log4js.info('getUserInfoById(userId:%d, appID:%s) cached: %s', tokenUserInfo.id, appid, cached)
+      }
       if (!userInfo) {
         log4js.error('request [%s %s] invalid! userId:%d (from token) not found in database', ctx.method, ctx.path, userId)
         throw new RbacTokenError('TOKEN_USER_NOT_FOUND')

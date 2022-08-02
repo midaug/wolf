@@ -66,7 +66,9 @@ class RbacPub extends BasicService {
         return JSON.stringify(this)
       }
     }
-    this.log4js.info('getResource({appID: %s, action: %s, resName: %s}) res: %s, cached: %s', appID, action, resName, resource, cached)
+    if ('hit' !== cached){
+      this.log4js.info('getResource({appID: %s, action: %s, resName: %s}) res: %s, cached: %s', appID, action, resName, resource, cached)
+    }
     const data = {userInfo: util.filterFieldWhite(userInfo, userFields)}
     if (resource) {
       this.ctx.resource = resource;
