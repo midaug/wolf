@@ -196,10 +196,10 @@ class BasicService extends Service {
   }
 
   async updateLastLoginTime(id, lastLogin) {
-    const options = {where: {id}, returning: true}
+    const options = {where: {id}, returning: false}
     const values = {lastLogin: lastLogin}
-    const {newValues: newUserInfo} = await UserModel.mustUpdate(values, options)
-    return newUserInfo.toJSON().lastLogin;
+    await UserModel.update(values, options)
+    return values;
   }
 
   async tokenCreate(userInfo, appid) {
