@@ -1,6 +1,7 @@
 server/.nyc_output
 server/coverage
 server/log
+server/html
 build-docker-img-server-use-proxy.sh
 server/node_modules
 server/package-lock.json
