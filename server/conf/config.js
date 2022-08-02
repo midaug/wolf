@@ -10,6 +10,7 @@ const config = {
   memCacheByRedis: (process.env.MEM_CACHE_BY_REDIS || 'no') === 'yes',
   clientChangePassword: (process.env.CLIENT_CHANGE_PWD || 'yes') === 'yes',
   recordLastLoginTime: (process.env.RECORD_LAST_LOGIN_TIME || 'yes') === 'yes',  
+  logLevel: process.env.LOG_LEVEL || 'info',
   database: {
     url: process.env.RBAC_SQL_URL || 'postgres://wolfroot:123456@127.0.0.1:5432/wolf',
   },
