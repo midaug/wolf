@@ -200,13 +200,13 @@ class Rbac extends RbacPub {
   }
 
   async loginPost() {
-    const {ok, reason, token, userInfo} = await this._loginPostInternal();
+    const {ok, reason, token, userInfo, expiresIn} = await this._loginPostInternal();
     if (!ok) {
       this.fail(200, reason, {})
       return
     }
     const {id, username, nickname} = userInfo;
-    const data = {userInfo: {id, username, nickname}, token}
+    const data = {userInfo: {id, username, nickname}, token, exp: expiresIn}
     this.success(data)
   }
 
